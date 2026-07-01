@@ -1,0 +1,101 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="صحابه | دانشنامه">
+  <div class="search-section">
+    <div class="search-wrapper">
+      <input type="text" class="search-input" placeholder="جستجوی یاران پیامبر ﷺ" />
+      <div class="search-btn">
+        <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+    </div>
+  </div>
+</MainLayout>
+
+<style lang="scss">
+  .search-section {
+    padding-top: 2rem;
+  }
+
+  .search-wrapper {
+    position: relative;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .search-btn {
+    position: absolute;
+    left: calc(2rem + 32px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: var(--color-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    cursor: pointer;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s;
+
+    &:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+  }
+
+  .search-icon {
+    color: var(--color-crimson);
+    display: block;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 28px 32px 28px 104px;
+    border: none;
+    border-radius: 30px;
+    background: #fff;
+    color: #333;
+    font-size: 1.1rem;
+    font-family: 'Vazirmatn', sans-serif;
+    outline: none;
+    direction: rtl;
+    box-sizing: border-box;
+    font-weight: 500;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+
+    &::placeholder {
+      color: #bbb;
+      font-weight: 400;
+    }
+
+    &:focus {
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), 0 0 0 2px rgba(212, 175, 55, 0.3);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .search-section {
+      padding-top: 1.5rem;
+    }
+    .search-wrapper {
+      padding: 0 1.25rem;
+    }
+    .search-btn {
+      left: calc(1.25rem + 32px);
+      width: 42px;
+      height: 42px;
+    }
+    .search-input {
+      padding: 22px 22px 22px 88px;
+      font-size: 1rem;
+    }
+  }
+</style>

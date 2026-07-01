@@ -1,0 +1,51 @@
+:root {
+  --color-background: #fafafa;
+  --color-foreground: #171717;
+  --color-crimson: #5a0d0d;
+  --color-gold: #d4af37;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-crimson);
+  color: var(--color-foreground);
+  font-family: "Vazirmatn", "Tahoma", system-ui, sans-serif;
+  direction: rtl;
+}
+
+// ── Desktop card ──────────────────────────────────────────
+.card {
+  height: calc(100vh - 16px);
+  background-color: var(--color-background);
+  border-radius: 24px;
+  padding: 3rem 3.5rem;
+  margin-top: 8px;
+  margin-right: min(270px, max(240px, 16vw));
+  margin-bottom: 8px;
+  margin-left: clamp(60px, 4vw, 80px);
+  overflow: hidden;
+
+  @media (max-width: 1024px) {
+    padding: 2.5rem 2rem;
+  }
+
+  @media (max-width: 768px) {
+    margin: 0;
+    border-radius: 0;
+    height: 100vh;
+    padding: 1.5rem 1.25rem;
+  }
+}

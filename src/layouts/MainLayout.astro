@@ -1,0 +1,299 @@
+---
+import "../styles/global.scss";
+import "@fontsource/alexandria/300.css";
+import "@fontsource/alexandria/400.css";
+import "@fontsource/alexandria/500.css";
+import "@fontsource/alexandria/600.css";
+import "@fontsource/alexandria/700.css";
+import SideNav from "../components/SideNav.astro";
+import ShieldIcon from "../components/icons/ShieldIcon.astro";
+import DomeIcon from "../components/icons/DomeIcon.astro";
+import BookIcon from "../components/icons/BookIcon.astro";
+import PeopleIcon from "../components/icons/PeopleIcon.astro";
+import WomanIcon from "../components/icons/WomanIcon.astro";
+import PersonIcon from "../components/icons/PersonIcon.astro";
+import ListIcon from "../components/icons/ListIcon.astro";
+import QuestionIcon from "../components/icons/QuestionIcon.astro";
+import ChevronIcon from "../components/icons/ChevronIcon.astro";
+import { menus } from "../data/menus";
+
+const iconMap = {
+  DomeIcon,
+  BookIcon,
+  PeopleIcon,
+  WomanIcon,
+  PersonIcon,
+  ListIcon,
+  QuestionIcon,
+};
+
+export interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <SideNav />
+
+    <div class="right-panel">
+      <div class="brand">
+        <span class="brand-icon">
+          <ShieldIcon />
+        </span>
+        <span class="brand-text">دانشنامه صحابه</span>
+      </div>
+
+      <div class="brand-divider"></div>
+
+      <nav class="main-nav">
+        <ul class="nav-list">
+          {menus.map((menu) => {
+            const Icon = iconMap[menu.icon]
+            const itemId = `sub-${menu.id}`
+            if (menu.href) {
+              return <li class="nav-item">
+                <a href={menu.href} class="nav-link">
+                  <span class="nav-label"><Icon /> {menu.label}</span>
+                </a>
+              </li>
+            }
+            return <li class="nav-item">
+              <input type="checkbox" id={itemId} class="submenu-toggle" />
+              <label for={itemId} class="nav-link">
+                <span class="nav-label"><Icon /> {menu.label}</span>
+                <span class="chevron"><ChevronIcon /></span>
+              </label>
+              {menu.submenu && <ul class="submenu">
+                {menu.submenu.map(sub => <li><a href={sub.href}>{sub.label}</a></li>)}
+              </ul>}
+            </li>
+          })}
+        </ul>
+      </nav>
+    </div>
+
+    <main class="card">
+      <slot />
+    </main>
+
+    <script>
+      const toggles = document.querySelectorAll('.submenu-toggle')
+      toggles.forEach(toggle => {
+        toggle.addEventListener('change', function () {
+          if (this.checked) {
+            toggles.forEach(other => {
+              if (other !== this) other.checked = false
+            })
+          }
+        })
+      })
+    </script>
+  </body>
+</html>
+
+<style lang="scss" is:global>
+  .right-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: clamp(240px, 16vw, 270px);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+    z-index: 10;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .brand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color-gold);
+    color: var(--color-crimson);
+
+    svg {
+      display: block;
+    }
+  }
+
+  .brand-text {
+    color: var(--color-gold);
+    font-size: 1.05rem;
+    font-weight: 600;
+    font-family: 'Alexandria', sans-serif;
+    white-space: nowrap;
+  }
+
+  .brand-divider {
+    width: 60%;
+    height: 1px;
+    margin: 1rem auto;
+    background: linear-gradient(
+      to left,
+      var(--color-gold) 0%,
+      transparent 100%
+    );
+    opacity: 0.35;
+  }
+
+  .main-nav {
+    width: 100%;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 0 18px 0 14px;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    box-sizing: border-box;
+  }
+
+  .nav-item {
+    width: 100%;
+    position: relative;
+  }
+
+  .submenu-toggle {
+    display: none;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 14px 15px 14px 12px;
+    border-radius: 10px;
+    color: #ece3d2;
+    font-size: 80%;
+    font-weight: 500;
+    font-family: 'Vazirmatn', sans-serif;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+    width: 100%;
+    text-decoration: none;
+    border: none;
+    box-sizing: border-box;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &:active {
+      background: var(--color-gold);
+      color: var(--color-crimson);
+    }
+
+    svg {
+      flex-shrink: 0;
+      display: block;
+    }
+  }
+
+  .nav-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .chevron {
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+
+    svg {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  .submenu-toggle:checked + .nav-link {
+    background: var(--color-gold);
+    color: var(--color-crimson);
+
+    .chevron {
+      opacity: 1;
+    }
+
+    .chevron svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  .submenu {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.08s;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.12);
+
+    a {
+      display: block;
+      padding: 10px 38px 10px 28px;
+      color: rgba(240, 230, 211, 0.75);
+      text-decoration: none;
+      font-size: 85%;
+      font-weight: 400;
+      transition: color 0.2s, background 0.2s;
+      border-radius: 8px;
+
+      &:hover {
+    color: #ece3d2;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      &:active {
+        color: var(--color-crimson);
+        background: var(--color-gold);
+      }
+    }
+  }
+
+  .submenu-toggle:checked ~ .submenu {
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  /* سوال روز — no submenu, regular link */
+  .nav-item:last-child .nav-link {
+    cursor: pointer;
+  }
+</style>
