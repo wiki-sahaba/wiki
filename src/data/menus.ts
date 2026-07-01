@@ -2,7 +2,7 @@ export const menus = [
   {
     id: 'muhammad',
     icon: 'DomeIcon',
-    label: 'محمد',
+    label: 'محمد رسول الله',
     submenu: [
       { label: 'نام و نسب', href: '#' },
       { label: 'زندگینامه', href: '#' },
