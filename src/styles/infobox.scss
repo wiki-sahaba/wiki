@@ -1,0 +1,103 @@
+.infobox {
+  width: 270px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1.5px solid rgba(90, 13, 13, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-height: calc(100vh - 80px);
+
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.2);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 1100px) { width: 220px; }
+  @media (max-width: 900px) {
+    position: static;
+    width: 100%;
+    max-height: none;
+  }
+}
+
+.infobox .header {
+  height: 120px;
+  position: relative;
+  background: var(--color-crimson);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.infobox .header-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.infobox .title {
+  position: relative;
+  z-index: 1;
+
+  h1 {
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    font-family: 'Alexandria', sans-serif;
+  }
+
+  p {
+    opacity: 0.85;
+    font-size: 0.62rem;
+  }
+}
+
+.infobox .content {
+  padding: 12px 12px 14px;
+  background: white;
+  margin-top: -14px;
+  border-radius: 14px 14px 0 0;
+  position: relative;
+}
+
+.infobox .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.infobox .box {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(90, 13, 13, 0.03);
+  border: 1px solid rgba(90, 13, 13, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.infobox .label {
+  font-size: 0.62rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+  min-width: 50px;
+}
+
+.infobox .value {
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: #1e293b;
+  text-align: left;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}

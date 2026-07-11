@@ -1,0 +1,132 @@
+---
+import events from "../../data/calendar.json";
+
+const hijriMonths = [
+  "محرم", "صفر", "ربيع الأول", "ربيع الثاني",
+  "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان",
+  "رمضان", "شوال", "ذو القعدة", "ذو الحجة"
+];
+
+function gregorianToHijri(date: Date): { year: number; month: number; day: number } {
+  const gd = date.getDate();
+  const gm = date.getMonth() + 1;
+  const gy = date.getFullYear();
+
+  let jd = Math.floor((1461 * (gy + 4800 + Math.floor((gm - 14) / 12))) / 4) +
+    Math.floor((367 * (gm - 2 - 12 * Math.floor((gm - 14) / 12))) / 12) -
+    Math.floor((3 * Math.floor((gy + 4900 + Math.floor((gm - 14) / 12)) / 100)) / 4) +
+    gd - 32075;
+
+  const l = jd - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  const remainder = l - 10631 * n + 354;
+  const j = Math.floor((10985 - remainder) / 5316) * Math.floor((50 * remainder) / 17719) +
+    Math.floor(remainder / 5670) * Math.floor((43 * remainder) / 15238);
+  const remainderJ = remainder - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
+    Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+  const hm = Math.floor((24 * remainderJ) / 709);
+  const hd = remainderJ - Math.floor((709 * hm) / 24);
+  const hy = 30 * n + j - 30;
+
+  return { year: hy, month: hm, day: hd };
+}
+
+const now = new Date();
+const hijri = gregorianToHijri(now);
+const todayEvents = events.filter(e => e.month === hijri.month && e.day === hijri.day);
+const hasEvents = todayEvents.length > 0;
+---
+
+<div class="cal-card">
+  <div class="cal-header">
+    <div class="cal-icon">📅</div>
+    <h3 class="cal-title">تقویم تاریخ</h3>
+  </div>
+
+  <div class="cal-body">
+    <div class="cal-date">{hijri.day} {hijriMonths[hijri.month - 1]} {hijri.year} هـ ق</div>
+    {hasEvents ? (
+      <ul class="cal-events">
+        {todayEvents.map(ev => (
+          <li class="cal-event">{ev.event}</li>
+        ))}
+      </ul>
+    ) : (
+      <div class="cal-empty">رویداد خاصی ثبت نشده</div>
+    )}
+  </div>
+</div>
+
+<style lang="scss">
+  .cal-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .cal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .cal-icon { font-size: 1.3rem; }
+
+  .cal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-crimson);
+    margin: 0;
+  }
+
+  .cal-body { flex: 1; }
+
+  .cal-date {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-gold);
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f5f0e8;
+  }
+
+  .cal-events {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cal-event {
+    font-size: 0.82rem;
+    color: #444;
+    padding: 0.5rem 0.7rem;
+    background: #faf6f0;
+    border-radius: 8px;
+    line-height: 1.5;
+    position: relative;
+    padding-right: 1.2rem;
+
+    &::before {
+      content: "•";
+      position: absolute;
+      right: 0.4rem;
+      color: var(--color-gold);
+      font-weight: bold;
+    }
+  }
+
+  .cal-empty {
+    font-size: 0.82rem;
+    color: #aaa;
+    text-align: center;
+    padding: 1rem 0;
+  }
+</style>

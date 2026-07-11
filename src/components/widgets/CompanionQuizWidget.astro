@@ -1,0 +1,172 @@
+---
+import companions from "../../data/companion-quiz.json";
+const now = new Date();
+const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+const todayIndex = dayOfYear % companions.length;
+const todayComp = companions[todayIndex];
+---
+
+<div class="companion-card" id="companion-card" data-companions={JSON.stringify(companions)}>
+  <div class="companion-header">
+    <div class="companion-icon">🫎</div>
+    <h3 class="companion-title">صحابی کیست؟</h3>
+  </div>
+
+  <div class="companion-body" id="companion-body">
+    <div class="clues-box" id="clues-box">
+      {todayComp.clues.map((clue) => (
+        <div class="clue-item">🔍 {clue}</div>
+      ))}
+    </div>
+    <p class="companion-question">این صحابی کیست؟</p>
+    <div class="companion-options" id="companion-options">
+      {todayComp.options.map((opt, i) => (
+        <button class="companion-opt" data-index={i}>{opt}</button>
+      ))}
+    </div>
+    <div class="companion-result" id="companion-result" style="display:none"></div>
+  </div>
+
+  <div class="companion-nav">
+    <button class="companion-nav-btn" id="comp-prev">‹ قبلی</button>
+    <span class="companion-counter" id="comp-counter">{todayIndex + 1} / {companions.length}</span>
+    <button class="companion-nav-btn" id="comp-next">بعدی ›</button>
+  </div>
+</div>
+
+<script src="../../scripts/companion-quiz.ts"></script>
+
+<style lang="scss">
+  .companion-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .companion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .companion-icon { font-size: 1.3rem; }
+
+  .companion-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-crimson);
+    margin: 0;
+  }
+
+  .clues-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .clue-item {
+    font-size: 0.82rem;
+    color: #555;
+    padding: 0.4rem 0.7rem;
+    background: #faf6f0;
+    border-radius: 8px;
+    border-right: 3px solid var(--color-gold);
+  }
+
+  .companion-question {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.7rem;
+  }
+
+  .companion-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .companion-opt {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    background: #fafafa;
+    color: #333;
+    font-size: 0.82rem;
+    font-family: 'Vazirmatn', sans-serif;
+    cursor: pointer;
+    text-align: right;
+    transition: all 0.2s;
+
+    &:hover:not(:disabled) {
+      border-color: var(--color-gold);
+      background: #fffbf0;
+    }
+    &.correct {
+      border-color: #2ecc71;
+      background: #e8f8f0;
+      color: #1a7a42;
+    }
+    &.wrong {
+      border-color: #e74c3c;
+      background: #fde8e8;
+      color: #b03a2e;
+    }
+    &:disabled { cursor: default; opacity: 0.85; }
+  }
+
+  .companion-result {
+    margin-top: 0.7rem;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: #f8f8f8;
+    font-size: 0.82rem;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .result-link {
+    color: var(--color-crimson);
+    font-weight: 600;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+
+  .companion-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .companion-nav-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    font-family: 'Vazirmatn', sans-serif;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+    &:hover {
+      border-color: var(--color-gold);
+      color: var(--color-crimson);
+    }
+  }
+
+  .companion-counter {
+    font-size: 0.78rem;
+    color: #999;
+    font-weight: 500;
+  }
+</style>

@@ -1,24 +1,100 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import QuizWidget from "../components/widgets/QuizWidget.astro";
+import CalendarWidget from "../components/widgets/CalendarWidget.astro";
+import ArticleCountWidget from "../components/widgets/ArticleCountWidget.astro";
+import SahabaCountWidget from "../components/widgets/SahabaCountWidget.astro";
+import TabeinCountWidget from "../components/widgets/TabeinCountWidget.astro";
+import TabeTabeinCountWidget from "../components/widgets/TabeTabeinCountWidget.astro";
+import CompanionOfDayWidget from "../components/widgets/CompanionOfDayWidget.astro";
+import { getCollection } from "astro:content";
+
+const articles = await getCollection("articles");
+const searchData = articles.map((a) => ({
+  title: a.data.title,
+  slug: a.slug,
+  description: a.data.description ?? "",
+  body: a.body?.slice(0, 500) ?? "",
+}));
 ---
 
-<MainLayout title="صحابه | دانشنامه">
+<MainLayout title="صحابه | دانشنامه" showSideNav={true}>
   <div class="search-section">
     <div class="search-wrapper">
-      <input type="text" class="search-input" placeholder="جستجوی یاران پیامبر ﷺ" />
-      <div class="search-btn">
+      <input type="text" class="search-input" id="search-input" placeholder="در جستجوی خیر القرون..." />
+      <div class="search-btn" id="search-btn">
         <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </div>
     </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <CompanionOfDayWidget />
+
+  <div class="widgets-grid">
+    <QuizWidget />
+    <CalendarWidget />
+  </div>
+
+  <div class="stats-grid">
+    <ArticleCountWidget />
+    <SahabaCountWidget />
+    <TabeinCountWidget />
+    <TabeTabeinCountWidget />
   </div>
 </MainLayout>
 
+<script define:vars={{ searchData }}>
+  const input = document.getElementById('search-input');
+  const resultsEl = document.getElementById('search-results');
+
+  function search(query) {
+    if (!query || query.length < 2) {
+      resultsEl.innerHTML = '';
+      resultsEl.style.display = 'none';
+      return;
+    }
+    const q = query.toLowerCase();
+    const matches = searchData.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      a.description.toLowerCase().includes(q) ||
+      a.body.toLowerCase().includes(q)
+    );
+    if (matches.length === 0) {
+      resultsEl.innerHTML = '<div class="search-empty">نتیجه‌ای یافت نشد</div>';
+    } else {
+      resultsEl.innerHTML = matches.map(a =>
+        `<a href="/articles/${a.slug}/" class="search-result-item">
+          <span class="search-result-title">${a.title}</span>
+          <span class="search-result-desc">${a.description}</span>
+        </a>`
+      ).join('');
+    }
+    resultsEl.style.display = 'block';
+  }
+
+  input?.addEventListener('input', (e) => search(e.target.value));
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      input.value = '';
+      resultsEl.innerHTML = '';
+      resultsEl.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-wrapper') && !e.target.closest('.search-results')) {
+      resultsEl.style.display = 'none';
+    }
+  });
+</script>
+
 <style lang="scss">
   .search-section {
-    padding-top: 2rem;
+    padding-top: 0.5rem;
   }
 
   .search-wrapper {
@@ -81,9 +157,81 @@ import MainLayout from "../layouts/MainLayout.astro";
     }
   }
 
+  .widgets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 0 2rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .widgets-grid {
+      padding: 0 0.5rem;
+      gap: 0.75rem;
+    }
+  }
+
   @media (max-width: 768px) {
-    .search-section {
-      padding-top: 1.5rem;
+  .search-results {
+    display: none;
+    max-width: 800px;
+    margin: 0.5rem auto 0;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    position: relative;
+    z-index: 5;
+  }
+
+  .search-result-item {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 24px;
+    text-decoration: none;
+    transition: background 0.15s;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(212, 175, 55, 0.06);
+    }
+  }
+
+  .search-result-title {
+    font-weight: 600;
+    color: var(--color-crimson);
+    font-size: 0.95rem;
+  }
+
+  .search-result-desc {
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  .search-empty {
+    padding: 20px 24px;
+    text-align: center;
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+  .search-section {
+      padding-top: 4.5rem;
     }
     .search-wrapper {
       padding: 0 1.25rem;
@@ -96,6 +244,15 @@ import MainLayout from "../layouts/MainLayout.astro";
     .search-input {
       padding: 22px 22px 22px 88px;
       font-size: 1rem;
+    }
+    .widgets-grid {
+      grid-template-columns: 1fr;
+      padding: 0 1.25rem;
+      gap: 0.75rem;
+    }
+    .stats-grid {
+      padding: 0 1.25rem;
+      gap: 0.75rem;
     }
   }
 </style>

@@ -1,1 +1,0 @@
-cd /d E:\App\sahaba && npm run dev

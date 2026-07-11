@@ -1,0 +1,91 @@
+---
+---
+<button class="hamburger" id="hamburger" aria-label="منو">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<div class="mobile-overlay" id="mobile-overlay"></div>
+
+<script>
+  const btn = document.getElementById('hamburger');
+  const panel = document.querySelector('.right-panel');
+  const overlay = document.getElementById('mobile-overlay');
+
+  btn?.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    panel?.classList.toggle('mobile-open');
+    overlay?.classList.toggle('show');
+    document.body.style.overflow = panel?.classList.contains('mobile-open') ? 'hidden' : '';
+  });
+
+  overlay?.addEventListener('click', () => {
+    btn?.classList.remove('active');
+    panel?.classList.remove('mobile-open');
+    overlay?.classList.remove('show');
+    document.body.style.overflow = '';
+  });
+</script>
+
+<style lang="scss">
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    width: 44px;
+    height: 44px;
+    background: var(--color-gold);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;
+
+    span {
+      display: block;
+      width: 22px;
+      height: 2.5px;
+      background: var(--color-crimson);
+      border-radius: 2px;
+      transition: all 0.25s;
+    }
+
+    &.active span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+
+    &.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    &.active span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    @media (max-width: 768px) {
+      display: flex;
+    }
+  }
+
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+
+    &.show {
+      display: block;
+    }
+
+    @media (min-width: 769px) {
+      display: none !important;
+    }
+  }
+</style>

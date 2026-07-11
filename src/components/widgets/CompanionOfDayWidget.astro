@@ -1,0 +1,111 @@
+---
+import companions from "../../data/companion-of-day.json";
+
+const now = new Date();
+const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
+const todayComp = companions[dayOfYear % companions.length];
+---
+
+<a href={`/articles/${todayComp.slug}/`} class="raz-card">
+  <div class="raz-content">
+    <div class="raz-badge">راز یار</div>
+    <h3 class="raz-title">{todayComp.name}</h3>
+    <div class="raz-clues">
+      {todayComp.clues.map((clue) => (
+        <div class="raz-clue">{clue}</div>
+      ))}
+    </div>
+    <div class="raz-virtues">{todayComp.virtues}</div>
+  </div>
+  <div class="raz-arrow">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </div>
+</a>
+
+<style lang="scss">
+  .raz-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, var(--color-crimson) 0%, #7a1a1a 100%);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    margin-top: 1.5rem;
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .raz-content {
+    flex: 1;
+  }
+
+  .raz-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--color-gold);
+    color: var(--color-crimson);
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.6rem;
+  }
+
+  .raz-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: 'Alexandria', sans-serif;
+    color: var(--color-gold);
+    margin: 0 0 0.6rem;
+  }
+
+  .raz-clues {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .raz-clue {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    padding-right: 0.8rem;
+    position: relative;
+
+    &::before {
+      content: "◆";
+      position: absolute;
+      right: 0;
+      color: var(--color-gold);
+      font-size: 0.5rem;
+      top: 0.25rem;
+    }
+  }
+
+  .raz-virtues {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.3rem;
+  }
+
+  .raz-arrow {
+    color: var(--color-gold);
+    margin-right: 1rem;
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+
+    .raz-card:hover & {
+      opacity: 1;
+    }
+  }
+</style>

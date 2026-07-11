@@ -1,0 +1,74 @@
+---
+import stats from "../../data/site-stats.json";
+---
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-number">{stats.totalSahaba}</span>
+    <span class="stat-label">صحابه</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-number">{stats.totalTabein}</span>
+    <span class="stat-label">تابعین</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-number">{stats.totalTabeTabein}</span>
+    <span class="stat-label">تبع تابعین</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-number">{stats.totalArticles}</span>
+    <span class="stat-label">مقالات</span>
+  </div>
+</div>
+
+<style lang="scss">
+  .stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background: var(--color-crimson);
+    border-radius: 16px;
+    padding: 1.2rem 2rem;
+    margin-top: 1.5rem;
+    grid-column: 1 / -1;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  .stat-number {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--color-gold);
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: rgba(236, 227, 210, 0.8);
+    font-weight: 400;
+  }
+
+  .stat-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(212, 175, 55, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    .stats-bar {
+      gap: 1rem;
+      padding: 1rem 1rem;
+      flex-wrap: wrap;
+    }
+    .stat-number { font-size: 1.3rem; }
+  }
+</style>

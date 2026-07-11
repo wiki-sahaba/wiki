@@ -1,4 +1,17 @@
-export const menus = [
+export interface SubMenuItem {
+  label: string;
+  href: string;
+}
+
+export interface MenuItem {
+  id: string;
+  icon: string;
+  label: string;
+  submenu?: SubMenuItem[];
+  href?: string;
+}
+
+export const menus: MenuItem[] = [
   {
     id: 'muhammad',
     icon: 'DomeIcon',
@@ -67,9 +80,27 @@ export const menus = [
     ],
   },
   {
-    id: 'question',
+    id: 'question-bank',
     icon: 'QuestionIcon',
-    label: 'سوال روز',
+    label: 'بانک سوالات',
     href: '#',
   },
-]
+  {
+    id: 'terms',
+    icon: 'ListIcon',
+    label: 'اصطلاحات و اماکن',
+    href: '#',
+  },
+  {
+    id: 'sources',
+    icon: 'BookIcon',
+    label: 'منابع',
+    href: '#',
+  },
+  {
+    id: 'library',
+    icon: 'BookIcon',
+    label: 'کتابخانه تخصصی',
+    href: '#',
+  },
+];

@@ -1,0 +1,89 @@
+---
+import "../../styles/toc.scss";
+
+export interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { headings } = Astro.props;
+const filtered = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{filtered.length > 0 && (
+  <nav class="toc" id="toc">
+    <div class="toc-header">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+      <span>فهرست مطالب</span>
+    </div>
+    <ul class="toc-list">
+      {filtered.map((h) => (
+        <li class:list={["toc-item", { "toc-sub": h.depth === 3 }]}>
+          <a href={`#${h.slug}`} data-target={h.slug}>
+            <span class="toc-dot"></span>
+            {h.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<script>
+  function initTocHighlight() {
+    const tocNav = document.getElementById('toc');
+    const tocLinks = tocNav?.querySelectorAll<HTMLAnchorElement>('a[data-target]');
+    if (!tocLinks?.length) return;
+
+    const headingIds = Array.from(tocLinks).map((l) => l.dataset.target!);
+    const headings = headingIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (!headings.length) return;
+
+    const scrollEl = document.querySelector('.article-scroll') as HTMLElement | null;
+    if (!scrollEl) return;
+
+    let lastActiveId = '';
+
+    function update() {
+      let activeId = headingIds[0];
+      const offset = 80;
+
+      for (const h of headings) {
+        const rect = h.getBoundingClientRect();
+        const containerTop = scrollEl.getBoundingClientRect().top;
+        if (rect.top - containerTop < offset) {
+          activeId = h.id;
+        }
+      }
+
+      if (activeId !== lastActiveId) {
+        lastActiveId = activeId;
+
+        tocLinks.forEach((link) => {
+          link.classList.toggle('active', link.dataset.target === activeId);
+        });
+
+        const activeLink = tocNav!.querySelector<HTMLAnchorElement>(`a[data-target="${activeId}"]`);
+        if (activeLink && tocNav) {
+          const navRect = tocNav.getBoundingClientRect();
+          const linkRect = activeLink.getBoundingClientRect();
+          const navScrollTop = tocNav.scrollTop;
+          const linkOffsetTop = linkRect.top - navRect.top + navScrollTop;
+          const targetScroll = linkOffsetTop - navRect.height / 2 + linkRect.height / 2;
+          tocNav.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        }
+      }
+    }
+
+    scrollEl.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  document.addEventListener('DOMContentLoaded', initTocHighlight);
+  document.addEventListener('astro:page-load', initTocHighlight);
+</script>

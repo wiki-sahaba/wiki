@@ -32,6 +32,73 @@
         "description": {
           "type": "string"
         },
+        "infobox": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "image": {
+              "type": "string"
+            },
+            "imageAlt": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "label",
+                  "value"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "fields"
+          ],
+          "additionalProperties": false
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "author": {
+                "type": "string"
+              },
+              "year": {
+                "type": "string"
+              },
+              "publisher": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "additionalProperties": false
+          }
+        },
         "$schema": {
           "type": "string"
         }

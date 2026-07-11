@@ -6,6 +6,7 @@ import "@fontsource/alexandria/500.css";
 import "@fontsource/alexandria/600.css";
 import "@fontsource/alexandria/700.css";
 import SideNav from "../components/SideNav.astro";
+import Hamburger from "../components/Hamburger.astro";
 import ShieldIcon from "../components/icons/ShieldIcon.astro";
 import DomeIcon from "../components/icons/DomeIcon.astro";
 import BookIcon from "../components/icons/BookIcon.astro";
@@ -15,6 +16,7 @@ import PersonIcon from "../components/icons/PersonIcon.astro";
 import ListIcon from "../components/icons/ListIcon.astro";
 import QuestionIcon from "../components/icons/QuestionIcon.astro";
 import ChevronIcon from "../components/icons/ChevronIcon.astro";
+import AboutModal from "../components/AboutModal.astro";
 import { menus } from "../data/menus";
 
 const iconMap = {
@@ -29,9 +31,11 @@ const iconMap = {
 
 export interface Props {
   title?: string;
+  showSideNav?: boolean;
+  articlePage?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, showSideNav = false, articlePage = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -46,14 +50,15 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <SideNav />
+    <Hamburger />
+    {showSideNav && <SideNav />}
 
     <div class="right-panel">
       <div class="brand">
         <span class="brand-icon">
           <ShieldIcon />
         </span>
-        <span class="brand-text">دانشنامه صحابه</span>
+        <span class="brand-text" data-tooltip="بزرگترین دانشنامه دیجیتالی صحابه"><a href="/">دانشنامه صحابه</a></span>
       </div>
 
       <div class="brand-divider"></div>
@@ -85,21 +90,39 @@ const { title } = Astro.props;
       </nav>
     </div>
 
-    <main class="card">
+    <main class:list={["card", { "card--full": !showSideNav, "card--article": articlePage }]}>
       <slot />
     </main>
 
+    <AboutModal />
+
     <script>
-      const toggles = document.querySelectorAll('.submenu-toggle')
-      toggles.forEach(toggle => {
-        toggle.addEventListener('change', function () {
+      const toggles = document.querySelectorAll<HTMLInputElement>('.submenu-toggle');
+      toggles.forEach((toggle) => {
+        toggle.addEventListener('change', function (this: HTMLInputElement) {
           if (this.checked) {
-            toggles.forEach(other => {
-              if (other !== this) other.checked = false
-            })
+            toggles.forEach((other) => {
+              if (other !== this) other.checked = false;
+            });
           }
-        })
-      })
+        });
+      });
+
+      // Theme toggle
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') document.body.classList.add('dark');
+
+      document.querySelector('.theme-toggle')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.body.classList.toggle('dark');
+        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      });
+
+      // About popup
+      document.querySelector('.about-toggle')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('about-modal')?.classList.add('show');
+      });
     </script>
   </body>
 </html>
@@ -109,7 +132,7 @@ const { title } = Astro.props;
     position: fixed;
     right: 0;
     top: 0;
-    width: clamp(240px, 16vw, 270px);
+    width: clamp(280px, 16vw, 320px);
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -119,6 +142,17 @@ const { title } = Astro.props;
 
     @media (max-width: 768px) {
       display: none;
+
+      &.mobile-open {
+        display: flex;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 150;
+        background: var(--color-crimson);
+      }
     }
   }
 
@@ -150,6 +184,52 @@ const { title } = Astro.props;
     font-weight: 600;
     font-family: 'Alexandria', sans-serif;
     white-space: nowrap;
+    position: relative;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    &::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: var(--color-crimson);
+      font-size: 0.72rem;
+      font-family: 'Vazirmatn', sans-serif;
+      font-weight: 400;
+      padding: 5px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      border: 1px solid var(--color-gold);
+      z-index: 2;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 3px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: var(--color-gold);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 1;
+    }
+
+    &:hover::after,
+    &:hover::before {
+      opacity: 1;
+    }
   }
 
   .brand-divider {
@@ -172,7 +252,7 @@ const { title } = Astro.props;
 
   .nav-list {
     list-style: none;
-    padding: 0 18px 0 14px;
+    padding: 0 18px 0 0;
     margin: 0;
     width: 100%;
     display: flex;
@@ -198,7 +278,7 @@ const { title } = Astro.props;
     padding: 14px 15px 14px 12px;
     border-radius: 10px;
     color: #ece3d2;
-    font-size: 80%;
+    font-size: 0.95rem;
     font-weight: 500;
     font-family: 'Vazirmatn', sans-serif;
     background: transparent;
@@ -270,7 +350,7 @@ const { title } = Astro.props;
       padding: 10px 38px 10px 28px;
       color: rgba(240, 230, 211, 0.75);
       text-decoration: none;
-      font-size: 85%;
+      font-size: 0.95rem;
       font-weight: 400;
       transition: color 0.2s, background 0.2s;
       border-radius: 8px;

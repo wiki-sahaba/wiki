@@ -1,0 +1,59 @@
+---
+function toPersianNum(n: number): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return String(n).replace(/\d/g, d => persianDigits[parseInt(d)]);
+}
+
+import { getCollection } from "astro:content";
+import PeopleGroupIcon from "../icons/PeopleGroupIcon.astro";
+const articles = await getCollection("articles");
+
+const sahabaKeywords = ["صحابه", "صحابی", "صحابیات", "خلفای راشدین", "مهاجرین", "انصار", "عشره مبشره", "امهات المومنین"];
+const sahabaArticles = articles.filter(a =>
+  a.data.categories?.some(c => sahabaKeywords.some(k => c.includes(k)))
+);
+---
+
+<div class="stat-card">
+  <div class="stat-icon"><PeopleGroupIcon /></div>
+  <div class="stat-number">{toPersianNum(sahabaArticles.length)}</div>
+  <div class="stat-label">صحابه و صحابیات</div>
+</div>
+
+<style lang="scss">
+  .stat-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    text-align: center;
+  }
+
+  .stat-icon {
+    color: var(--color-gold);
+    margin-bottom: 0.3rem;
+
+    :global(svg) {
+      display: block;
+    }
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-gold);
+    line-height: 1;
+    font-family: 'Alexandria', sans-serif;
+  }
+
+  .stat-label {
+    font-size: 0.82rem;
+    color: #888;
+    font-weight: 500;
+  }
+</style>
